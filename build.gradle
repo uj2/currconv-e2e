@@ -1,0 +1,27 @@
+apply plugin: 'groovy'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile 'org.spockframework:spock-core:1.1-groovy-2.4-rc-2'
+    testCompile 'org.seleniumhq.selenium:selenium-java:3.0.1'
+}
+
+task checkUrl {
+    doLast {
+        if (System.getProperty("e2e.currconv.url") == null) {
+            throw new GradleException("system property 'e2e.currconv.url' not specified")
+        }
+        if (System.getProperty("webdriver.chrome.driver") == null) {
+            throw new GradleException("system property 'webdriver.chrome.driver' not specified")
+        }
+    }
+}
+
+test {
+    dependsOn checkUrl
+    systemProperties['e2e.currconv.url'] = System.getProperty('e2e.currconv.url')
+    systemProperties['webdriver.chrome.driver'] = System.getProperty('webdriver.chrome.driver')
+}
